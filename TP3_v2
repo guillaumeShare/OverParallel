@@ -1,0 +1,157 @@
+\documentclass[letterpaper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tabularx} 
+\usepackage{amsmath}  
+\usepackage{graphicx} 
+\usepackage[margin=1in,letterpaper]{geometry}
+\usepackage[final]{hyperref} 
+\usepackage{listings}
+\usepackage[english]{babel}
+\usepackage{xcolor}
+\usepackage{minted}
+\usepackage{mdframed}
+\usemintedstyle{monokai}
+\definecolor{bg}{rgb}{0.14,0.14,0.14}
+
+\definecolor{mygray}{rgb}{0.4,0.4,0.4}
+\definecolor{mygreen}{rgb}{0.40,0.70,0.30}
+\definecolor{myorange}{rgb}{1.0,0.4,0}
+
+\newcommand{\question}[1]{\paragraph{#1\\ \vspace{0.5cm}}}
+
+\lstdefinestyle{C}
+{
+basicstyle=\footnotesize\sffamily\color{black},
+commentstyle=\color{mygray},
+breaklines=true,
+frame=single,
+numbers=left,
+numbersep=5pt,
+numberstyle=\tiny\color{mygray},
+keywordstyle=\color{mygreen},
+showspaces=false,
+showstringspaces=false,
+stringstyle=\color{myorange},
+tabsize=2
+}
+
+
+\lstdefinestyle{BASH}
+{
+    backgroundcolor=\color{black},
+    basicstyle=\scriptsize\color{white}\ttfamily
+}
+
+
+
+\begin{document}
+
+\title{Systèmes Parallèles -- Lab. Session 3\\
+\vspace{0.5cm}
+Introduction au parallélisme en mémoire partagée
+Intel TBB}
+\author{\textsc{Guillaume Leignier, Vincent Pasquereau, Thibaut Vercueil}}
+\date{5 novembre 2015}
+
+%TODO : Faire un saut de page
+\maketitle
+\tableofcontents
+
+
+\newpage
+\section{Évaluation des performances paralèlles}
+\textit{L'ensemble du TP a été réalisé sur un processeur Intel i5 -- 4 coeurs.}
+\newline 
+\newline
+\subsection{Annexe A}
+\textnormal{Modifier le code de l’annexe en utilisant la bibliothèque TBB et en vous concentrant sur une approche par
+parallélisme de données. On doit pouvoir fixer le nombre de threads à utiliser en le passant en paramètre de
+votre programme.}
+
+\subsubsection{Mesurer le temps d’exécution du code de chaque annexe modifiée en faisant varier n, le nombre de threads, de 1 à 8.}
+
+Pour le code A, on a :
+
+\begin{center}
+\begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+  \hline
+  Threads & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+  \hline
+  Temps & 1.04 & 0.54 & 0.37 & 0.30 & 0.36 & 0.30 & 0.30 & 0.29 \\
+  \hline 
+\end{tabular}
+\end{center}
+
+
+\vspace{1cm}
+Pour le code D, on a :\\ 
+
+\begin{lstlisting}[style=BASH]
+$ time -p cat AnnexeC.txt | ./b.out 
+real 29.25
+user 29.03
+sys 0.20
+\end{lstlisting}
+
+
+\subsubsection{Comparez vos résultats avec ceux obtenus aux TPs précédents avec les Pthreads et OpenMP. La comparaison
+peut être tout autant au niveau des performances finales que du temps ou de la difficulté de programmation.}
+
+
+Voici une comparaison des résultats pour l'annexe A (le calcul de la somme) avec l'annexe A du TP1:
+
+
+\begin{center}
+\begin{tabular}{|c||c|c|c|c|c|c|c|c|}
+  \hline
+   Nombre de threads & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+  \hline
+   Temps d'exécution annexe A (PThread) & 1.23 & 0.68 & 0.87 & 0.76 & 0.81 & 0.75 & 0.75 & 0.73 \\
+  \hline 
+  Temps d'exécution annexe C (OpenMP) & 1.04 & 0.54 & 0.37 & 0.30 & 0.36 & 0.30 & 0.30 & 0.29 \\
+  \hline
+ Temps d'exécution annexe A (TBB) & 0.19 & 0.14 & 0.5 & 0.46 & 0.45 & 0.45 & 0.45 & 0.44 \\
+ \hline
+ Différence (TBB - OpenMP) & 0.19 & 0.14 & 0.5 & 0.46 & 0.45 & 0.45 & 0.45 & 0.44
+ \\
+ \hline
+ Différence (TBB - PThread) & 0.19 & 0.14 & 0.5 & 0.46 & 0.45 & 0.45 & 0.45 & 0.44
+ \\
+ \hline 
+\end{tabular}
+\end{center}
+
+On remarque que l'utilisation de OpenMP apporte de meilleures performances pour la parallelisation.
+
+En effet, une différence notable: environs 0.5 ms s'observe à partir de 3 threads. Cette différence correspond à une amélioration d'environs 135\%.
+
+%TODO : Faire un joli graphique 
+
+\subsubsection{Tracer la courbe du ratio $S(n) = \frac{real(1)}{real(n)}$ en fonction de n.}
+
+%TODO : Faire une jolie courbe 
+
+\subsubsection{Tracer la courbe du ratio $\frac{S(n)}{n}$ en fonction de n.}
+
+%TODO : Faire une courbe toute mignonne
+
+\subsection{Annexe C}
+
+\textnormal{Modifier le code de l’annexe en utilisant la bibliothèque TBB ou OpenMP (au choix) et en vous concentrant sur une approche par parallélisme de données. On doit pouvoir fixer le nombre de threads à utiliser en le passant en paramètre de votre programme.}
+
+\subsubsection{Mesurer le temps d’exécution du code de chaque annexe modifiée en faisant varier n, le nombre de threads, de 1 à 8.}
+
+\subsubsection{Tracer la courbe du ratio $S(n) = \frac{real(1)}{real(n)}$ en fonction de n.}
+
+%TODO : Faire une jolie courbe2
+
+\subsubsection{Tracer la courbe du ratio $\frac{S(n)}{n}$ en fonction de n.}
+
+%TODO : Faire une courbe toute mignonne2
+
+\section{Conclusion}
+
+
+
+\end{document}
